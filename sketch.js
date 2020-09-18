@@ -13,10 +13,13 @@ function preload() {
   TAMBONZIN = loadSound('sample/percussion_tamborzin_130.wav')
   PAD = loadSound('sample/sad_pad_short.wav')
   PUNCTUAL = loadSound('sample/punctual.wav')
+  ReversePUNCTUAL = loadSound('sample/punctual.wav')
+
 }
 
 function setup() {
   createCanvas(400, 400);
+  ReversePUNCTUAL.reverseBuffer();
   wave = new Wave();
 }
 
@@ -27,19 +30,44 @@ function draw() {
     particles[i].update();
   }
 
-  wave.getSoundLevel();
   wave.show();
+  wave.getSoundLevel();
 
 
-  if (keyIsDown(13)) { //13 is Return(in Mac)/Enter(in Win)
+  // if (keyIsDown(13)) { //13 is Return(in Mac)/Enter(in Win)
+  //   createParticle();
+  //   SHAKER.play();
+  // } else if (keyIsDown(68)) {
+  //   ChangeBackgroundColor();
+  //   PUNCTUAL.play();
+  // }
+}
+
+
+function keyPressed() {
+  if (keyCode == '38') {
     createParticle();
     SHAKER.play();
-  } else if (keyIsDown(68)) {
-    ChangeBackgroundColor();
+  } else if (keyCode == '40') {
     PUNCTUAL.play();
+  } else if (keyCode == '13') {
+    ChangeBackgroundColor();
+    CARIOCA.play();
   }
 }
 
+
+
+//-----------Key Control Part-----------
+// function keyTyped() {
+//   if (key == 'a') {
+//     blip.play();
+//   }
+//   if (keyCode == '13') {
+//     createParticle();
+//     SHAKER.play();
+//   }
+// }
 
 
 
@@ -52,6 +80,7 @@ class Wave {
     this.waveAmplitude = 0;
     this.amplitude = new p5.Amplitude();
     this.count = 0;
+
   }
   getSoundLevel() {
     this.level = this.amplitude.getLevel();
@@ -111,7 +140,7 @@ class Particle {
 }
 
 function createParticle() {
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < 50; i++) {
     let p = new Particle();
     particles.push(p);
   }
