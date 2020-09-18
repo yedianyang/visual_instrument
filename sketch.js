@@ -11,15 +11,14 @@ function preload() {
   SHAKER = loadSound('sample/shaker_cake_single.wav')
   CARIOCA = loadSound('sample/percussion_carioca_short.wav')
   TAMBONZIN = loadSound('sample/percussion_tamborzin_130.wav')
-  PAD = loadSound('sample/sad_pad_short.wav')
   PUNCTUAL = loadSound('sample/punctual.wav')
   ReversePUNCTUAL = loadSound('sample/punctual.wav')
 
 }
 
 function setup() {
-  createCanvas(400, 400);
-  ReversePUNCTUAL.reverseBuffer();
+  createCanvas(720, 480);
+  //ReversePUNCTUAL.reverseBuffer();
   wave = new Wave();
 }
 
@@ -30,44 +29,30 @@ function draw() {
     particles[i].update();
   }
 
-  wave.show();
-  wave.getSoundLevel();
-
-
-  // if (keyIsDown(13)) { //13 is Return(in Mac)/Enter(in Win)
-  //   createParticle();
-  //   SHAKER.play();
-  // } else if (keyIsDown(68)) {
-  //   ChangeBackgroundColor();
-  //   PUNCTUAL.play();
-  // }
-}
-
-
-function keyPressed() {
-  if (keyCode == '38') {
-    createParticle();
-    SHAKER.play();
-  } else if (keyCode == '40') {
-    PUNCTUAL.play();
-  } else if (keyCode == '13') {
-    ChangeBackgroundColor();
-    CARIOCA.play();
+  if (PUNCTUAL.isPlaying()) {
+    wave.show();
+    wave.getSoundLevel();
   }
 }
 
 
-
-//-----------Key Control Part-----------
-// function keyTyped() {
-//   if (key == 'a') {
-//     blip.play();
-//   }
-//   if (keyCode == '13') {
-//     createParticle();
-//     SHAKER.play();
-//   }
-// }
+function keyPressed() {
+  if (keyCode == '38') { //UP_ARROW
+    createParticle();
+    SHAKER.play();
+  } else if (keyCode == '40') { //DOWN_ARROW
+    PUNCTUAL.play();
+  } else if (keyCode == '13') { //ENTER
+    ChangeBackgroundColor();
+    CARIOCA.play();
+  } else if (keyCode == '32') { //Space Bar
+    if (TAMBONZIN.isLooping()) {
+      TAMBONZIN.stop();
+    } else {
+      TAMBONZIN.loop();
+    }
+  }
+}
 
 
 
@@ -80,36 +65,41 @@ class Wave {
     this.waveAmplitude = 0;
     this.amplitude = new p5.Amplitude();
     this.count = 0;
+    this.alpha = 255;
 
   }
   getSoundLevel() {
     this.level = this.amplitude.getLevel();
-    this.size = map(this.level, 0, 1, 0, 200);
+    this.size = map(this.level, 0, 1, 0, 255);
     this.waveAmplitude = 1000 / (this.size * 20);
     //print(this.count ++);
+    console.log(this.size);
   }
   show() {
-    stroke(255 - defaultColor);
+    stroke(255 - defaultColor, this.alpha);
     noFill();
     beginShape();
     //vertex(0, height);
     for (var x = width / 4; x < 3 * width / 4; x++) {
       let angle = x * 0.1;
-      var y = map(sin(angle), -this.waveAmplitude, this.waveAmplitude, 150, 250);
+      var y = map(sin(angle), -this.waveAmplitude, this.waveAmplitude, height / 4, height * 3 / 4);
       vertex(x, y);
     }
     endShape();
     this.offset += 0.1;
   }
+  // finished(){
+  //   if(this.size < 0.5){
+  //     this.alpha = map(this.size,0,1,-4,600);
+  //   }
+  // }
 }
 
 
 //-------------Invert Color--------------
 function ChangeBackgroundColor() {
   defaultColor = 255 - defaultColor;
-  key = null;
 }
-
 
 
 //-----------Particle system-------------
